@@ -1,7 +1,7 @@
 # Wealthfolio — Unraid Community Apps
 
 Unraid Community Apps (CA) submission for [**Wealthfolio**](https://wealthfolio.app),
-a beautiful, open-source, local-first investment and net worth tracker.
+a beautiful, open-source, local-first personal finance tracker.
 
 This repository hosts only the CA metadata. The application source, Docker image,
 and self-hosting documentation live in the upstream repository:

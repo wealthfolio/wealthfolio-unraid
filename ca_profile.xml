@@ -1,9 +1,9 @@
 <?xml version="1.0"?>
 <CommunityApplications>
   <Profile>
-Wealthfolio — a beautiful, open-source, **local-first** investment and net worth tracker.
+Wealthfolio — a beautiful, open-source, **local-first** personal finance tracker.
 
-This repository hosts the Unraid Community Apps template for the official `wealthfolio/wealthfolio` Docker image. Track portfolios across multiple accounts and asset types, import broker activities, set financial goals, and analyse performance — all stored in your own SQLite database with no cloud dependency.
+This repository hosts the Unraid Community Apps template for the official `wealthfolio/wealthfolio` Docker image. Track investments, net worth, spending, and simulations across multiple accounts and asset types — all stored in your own SQLite database with no cloud dependency.
 
 - **Website:** https://wealthfolio.app
 - **Source:** https://github.com/wealthfolio/wealthfolio

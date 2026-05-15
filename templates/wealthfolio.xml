@@ -9,7 +9,7 @@
   <Privileged>false</Privileged>
   <Support>https://forums.unraid.net/topic/198598-afadil-wealthfolio/</Support>
   <Project>https://wealthfolio.app</Project>
-  <Overview>Wealthfolio is a beautiful, open-source local-first investment and net worth tracker. Track portfolios across multiple accounts and asset types, import broker activities, set financial goals, and analyse performance — all stored in your own SQLite database with no cloud dependency.&#xD;
+  <Overview>Wealthfolio is a beautiful, open-source, local-first personal finance tracker. Track investments, net worth, spending, and simulations across multiple accounts and asset types — all stored in your own SQLite database with no cloud dependency.&#xD;
 &#xD;
 REQUIRED CONFIG:&#xD;
 1. WF_SECRET_KEY — generate with: openssl rand -base64 32 (back this up!)&#xD;
