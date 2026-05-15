@@ -30,6 +30,12 @@ Full guide: https://wealthfolio.app/docs/guide/self-hosting</Overview>
   <DonateText>Buy me a coffee</DonateText>
   <DonateLink>https://www.buymeacoffee.com/afadil</DonateLink>
   <Description>Wealthfolio is a beautiful, local-first personal finance tracker — investments, net worth, spending, and simulations — all stored in your own SQLite database with no cloud dependency.</Description>
+  <Screenshot>https://assets.wealthfolio.app/images/landing/hero-light-v3.png</Screenshot>
+  <Screenshot>https://assets.wealthfolio.app/images/landing/performance-dashboard.webp</Screenshot>
+  <Screenshot>https://assets.wealthfolio.app/images/landing/investment-tracking.webp</Screenshot>
+  <Screenshot>https://assets.wealthfolio.app/images/landing/net-worth.webp</Screenshot>
+  <Screenshot>https://assets.wealthfolio.app/images/landing/portfolio-insights.webp</Screenshot>
+  <Screenshot>https://assets.wealthfolio.app/images/landing/account-page.webp</Screenshot>
   <Networking>
     <Mode>bridge</Mode>
     <Publish>
