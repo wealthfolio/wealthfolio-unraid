@@ -1,24 +1,19 @@
+<?xml version="1.0"?>
 <CommunityApplications>
-  <!-- Required profile -->
   <Profile>
-    Describe what users will find in this repository, which apps or plugins you maintain, and where they should go for support.  Markdown supported
+Wealthfolio — a beautiful, open-source, **local-first** investment and net worth tracker.
+
+This repository hosts the Unraid Community Apps template for the official `wealthfolio/wealthfolio` Docker image. Track portfolios across multiple accounts and asset types, import broker activities, set financial goals, and analyse performance — all stored in your own SQLite database with no cloud dependency.
+
+- **Website:** https://wealthfolio.app
+- **Source:** https://github.com/wealthfolio/wealthfolio
+- **Self-hosting guide:** https://wealthfolio.app/docs/guide/self-hosting
+- **Support thread:** https://forums.unraid.net/topic/198598-afadil-wealthfolio/
+- **Report a bug:** https://github.com/wealthfolio/wealthfolio/issues
   </Profile>
-  <!-- Optional icon -->
-  <Icon>https://raw.githubusercontent.com/YOUR_GITHUB_USERNAME/YOUR_REPO_NAME/main/icon.svg</Icon>
-  <!-- Optional web page -->
-  <WebPage>https://github.com/YOUR_GITHUB_USERNAME/YOUR_REPO_NAME</WebPage>
-  <!-- Optional support and donation links -->
-  <Forum>https://forums.unraid.net/topic/YOUR_SUPPORT_TOPIC</Forum>
-  <!-- Optional Discord link -->
-  <Discord>https://discord.gg/YOUR_INVITE_CODE</Discord>
-  <!-- Optional donation link -->
-  <DonateLink>https://github.com/sponsors/YOUR_GITHUB_USERNAME</DonateLink>
-  <!-- Optional donation text -->
-  <DonateText>Support this project</DonateText>
-  <!-- Optional photos -->
-  <Photo>URL to any photos</Photo>
-  <!-- You can add multiple photos by adding multiple <Photo> tags -->
-  <!-- Optional videos -->
-  <Video>URL to any video.  Youtube URLs are recommended</Video>
-  <!-- You can add multiple videos by adding multiple <Video> tags -->
+  <Icon>https://raw.githubusercontent.com/wealthfolio/wealthfolio/main/assets/brand/icon.png</Icon>
+  <WebPage>https://wealthfolio.app</WebPage>
+  <Forum>https://forums.unraid.net/topic/198598-afadil-wealthfolio/</Forum>
+  <DonateLink>https://www.buymeacoffee.com/afadil</DonateLink>
+  <DonateText>Buy me a coffee</DonateText>
 </CommunityApplications>

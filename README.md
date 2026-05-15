@@ -1,32 +1,54 @@
-# Community Apps Starter Template
+# Wealthfolio — Unraid Community Apps
 
-Use this repository as a GitHub template when you want a clean starting point for a new Community Apps submission repository.
+Unraid Community Apps (CA) submission for [**Wealthfolio**](https://wealthfolio.app),
+a beautiful, open-source, local-first investment and net worth tracker.
 
-## Quick Start
+This repository hosts only the CA metadata. The application source, Docker image,
+and self-hosting documentation live in the upstream repository:
+[`wealthfolio/wealthfolio`](https://github.com/wealthfolio/wealthfolio).
 
-1. Click **Use this template** on GitHub and create your own repository.
-2. Replace the placeholder values in `ca_profile.xml`, `templates/example-app.xml`, and `plugins/example-plugin.xml`.
-3. Replace `icon.svg` with your own repository icon, or update `ca_profile.xml` to point at a hosted icon you control.
-4. Keep one XML file per Docker app under `templates/`.
-5. Keep one XML wrapper per plugin under `plugins/`.
-6. Delete the example files you do not need.
-7. Commit and push your repository.
-8. Run **Validate** and **Scan** in the Community Apps submit flow: `/submit`.
+## What's here
 
-## Starter Files
+- `ca_profile.xml` — repository profile shown in Community Apps.
+- `templates/wealthfolio.xml` — the Docker app template (image, ports, volumes,
+  env vars). CA fetches it directly from this repo's `main` branch.
 
-- `README.md`: onboarding notes for whoever maintains the repository.
-- `LICENSE`: starter MIT license text. Replace the placeholder copyright line.
-- `.gitignore`: keeps common OS junk out of the repo.
-- `icon.svg`: starter repository icon referenced by `ca_profile.xml`.
-- `ca_profile.xml`: repository overview and support metadata shown in Community Apps.
-- `templates/example-app.xml`: starter Docker application template.
-- `plugins/example-plugin.xml`: starter plugin wrapper.
+## Install (once the repo is approved by CA)
 
-## Submission Notes
+1. Open the **Apps** tab on Unraid.
+2. Search for **Wealthfolio**.
+3. Click **Install** and fill in the three required values:
+   - `WF_SECRET_KEY` — `openssl rand -base64 32` (back this up!)
+   - `WF_AUTH_PASSWORD_HASH` — `printf 'your-password' | argon2 yoursalt16chars! -id -e`
+   - `WF_CORS_ALLOW_ORIGINS` — the exact URL you'll use to reach the app
+     (e.g. `http://192.168.1.10:8088`)
+4. Click **Apply**.
 
-- Keep `ca_profile.xml` in the repository root.
-- Every Docker app entry needs a `<Repository>` tag.
-- Every plugin entry needs a `<PluginURL>` tag.
-- Keep each template's `TemplateURL` pointed at the raw GitHub URL for that exact XML file.
-- Use an OSI-approved license before submitting.
+Full setup guide, reverse-proxy notes, backup, and troubleshooting:
+<https://wealthfolio.app/docs/guide/self-hosting>
+
+## Sideload before CA approval
+
+If you want to install Wealthfolio on Unraid before this repository has been
+merged into Community Apps, sideload the template directly. SSH into Unraid
+(or use the WebTerminal) and run:
+
+```bash
+mkdir -p /boot/config/plugins/dockerMan/templates-user
+curl -fsSL \
+  https://raw.githubusercontent.com/wealthfolio/wealthfolio-unraid/main/templates/wealthfolio.xml \
+  -o /boot/config/plugins/dockerMan/templates-user/my-wealthfolio.xml
+```
+
+Then **Docker → Add Container → Template → User templates → wealthfolio**.
+
+## Support
+
+- **Forum thread:** <https://forums.unraid.net/topic/198598-afadil-wealthfolio/>
+- **Bug reports:** <https://github.com/wealthfolio/wealthfolio/issues>
+
+## License
+
+The template and metadata in this repository are released under the
+[MIT License](./LICENSE). The Wealthfolio application itself is licensed under
+[AGPL-3.0](https://github.com/wealthfolio/wealthfolio/blob/main/LICENSE).
