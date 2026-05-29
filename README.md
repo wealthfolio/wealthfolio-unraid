@@ -19,13 +19,13 @@ and self-hosting documentation live in the upstream repository:
 2. Search for **Wealthfolio**.
 3. Click **Install** and fill in the three required values:
    - `WF_SECRET_KEY` — `openssl rand -base64 32` (back this up!)
-   - `WF_AUTH_PASSWORD_HASH` — `printf 'your-password' | argon2 yoursalt16chars! -id -e`
+   - `WF_AUTH_PASSWORD_HASH` — `printf '%s' 'your-password' | argon2 yoursalt16chars -id -e`
    - `WF_CORS_ALLOW_ORIGINS` — the exact URL you'll use to reach the app
      (e.g. `http://192.168.1.10:8088`)
 4. Click **Apply**.
 
 Full setup guide, reverse-proxy notes, backup, and troubleshooting:
-<https://wealthfolio.app/docs/guide/self-hosting>
+<https://wealthfolio.app/docs/guide/self-hosting/unraid>
 
 ## Sideload before CA approval
 
@@ -40,7 +40,7 @@ curl -fsSL \
   -o /boot/config/plugins/dockerMan/templates-user/my-wealthfolio.xml
 ```
 
-Then **Docker → Add Container → Template → User templates → wealthfolio**.
+Then **Docker → Add Container → Template → User templates → Wealthfolio**.
 
 ## Support
 

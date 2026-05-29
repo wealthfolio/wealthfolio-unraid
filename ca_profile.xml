@@ -14,6 +14,8 @@ This repository hosts the Unraid Community Apps template for the official `wealt
   <Icon>https://raw.githubusercontent.com/wealthfolio/wealthfolio/main/assets/brand/icon.png</Icon>
   <WebPage>https://wealthfolio.app</WebPage>
   <Forum>https://forums.unraid.net/topic/198598-afadil-wealthfolio/</Forum>
+  <Project>https://wealthfolio.app</Project>
+  <Support>https://forums.unraid.net/topic/198598-afadil-wealthfolio/</Support>
   <DonateLink>https://www.buymeacoffee.com/afadil</DonateLink>
   <DonateText>Buy me a coffee</DonateText>
   <Photo>https://assets.wealthfolio.app/images/landing/hero-light-v3.png</Photo>
