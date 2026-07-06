@@ -23,9 +23,9 @@
 
 **Image:** The official `wealthfolio/wealthfolio` image is multi-arch (`linux/amd64` and `linux/arm64`), so it runs on both x86 servers and ARM boards. For predictable upgrades, pin to a specific version tag (e.g. `wealthfolio/wealthfolio:3.4.0`) instead of `:latest`.
 
-### Required configuration
+### Core configuration
 
-Three variables must be set before the app will start with auth enabled:
+Most installs use password login and need these values:
 
 1. **WF_SECRET_KEY** &#8212; a 32-byte key used to encrypt secrets at rest and sign session tokens. Generate it ONCE and keep it safe:
 
@@ -33,13 +33,23 @@ Three variables must be set before the app will start with auth enabled:
 
    Losing this key means losing access to all stored API keys and broker credentials.
 
-2. **WF_AUTH_PASSWORD_HASH** &#8212; an Argon2id PHC hash of your login password. Generate it with:
+2. **WF_AUTH_PASSWORD_HASH** &#8212; an Argon2id PHC hash of your login password. Required for password login; leave empty only if using OIDC SSO or `WF_AUTH_REQUIRED=false`. Generate it with:
 
    `printf '%s' 'your-password' | argon2 yoursalt16chars -id -e`
 
-   Use `printf`, not `echo -n`: `echo` behaves inconsistently across shells and can append a trailing newline, producing a hash that will never match your password. Paste the full `$argon2id$...` string. This is required unless you set `WF_AUTH_REQUIRED=false` (e.g. when a reverse proxy handles authentication).
+   Use `printf`, not `echo -n`: `echo` behaves inconsistently across shells and can append a trailing newline, producing a hash that will never match your password. Paste the full `$argon2id$...` string when using password login.
 
-3. **WF_CORS_ALLOW_ORIGINS** &#8212; the exact origin URL you will use to reach the app, matching scheme, host, and port (e.g. `http://192.168.1.10:8088` or `https://wealthfolio.example.com`).
+3. **WF_CORS_ALLOW_ORIGINS** &#8212; required when Wealthfolio auth is enabled. Use the exact origin URL you will use to reach the app, matching scheme, host, and port (e.g. `http://192.168.1.10:8088` or `https://wealthfolio.example.com`).
+
+### Optional SSO (OIDC)
+
+To use SSO, set `WF_OIDC_ISSUER_URL`, `WF_OIDC_CLIENT_ID`, and `WF_OIDC_REDIRECT_URL`. The redirect URL must be registered in your identity provider and usually looks like `https://wealthfolio.example.com/api/v1/auth/oidc/callback`.
+
+OIDC requires an allowlist: set `WF_OIDC_ALLOWED_EMAILS` and/or `WF_OIDC_ALLOWED_SUBS`, or set `WF_OIDC_ALLOW_ANY=true` only on a dedicated single-user identity provider.
+
+### Optional AI Agent Access (MCP)
+
+Set `WF_MCP_ENABLED=true` to expose AI Agent Access at `/mcp`. MCP requires Wealthfolio authentication via `WF_AUTH_PASSWORD_HASH` or OIDC. If you set `WF_AUTH_REQUIRED=false` because a reverse proxy handles login, the container will refuse to start with MCP enabled.
 
 ### Permissions (UID override)
 
@@ -63,10 +73,22 @@ Full Unraid self-hosting guide: https://wealthfolio.app/docs/guide/self-hosting/
   <Config Name="WebUI Port" Target="8088" Default="8088" Mode="tcp" Description="Host port to expose. Change if 8088 clashes with another container." Type="Port" Display="always" Required="true" Mask="false">8088</Config>
   <Config Name="Appdata" Target="/data" Default="/mnt/user/appdata/wealthfolio" Mode="rw" Description="Holds the SQLite database (wealthfolio.db) and the encrypted secrets file. BACK THIS UP." Type="Path" Display="always" Required="true" Mask="false">/mnt/user/appdata/wealthfolio</Config>
   <Config Name="WF_SECRET_KEY" Target="WF_SECRET_KEY" Default="" Mode="" Description="REQUIRED. 32-byte key used to encrypt secrets at rest and sign session tokens. Generate ONCE with: openssl rand -base64 32 -- then save it somewhere safe. Losing it means losing all stored API keys and broker credentials." Type="Variable" Display="always" Required="true" Mask="true"/>
-  <Config Name="WF_AUTH_PASSWORD_HASH" Target="WF_AUTH_PASSWORD_HASH" Default="" Mode="" Description="REQUIRED unless WF_AUTH_REQUIRED=false. Argon2id PHC hash of your login password. Generate with: printf '%s' 'your-password' | argon2 yoursalt16chars -id -e -- then paste the full argon2id PHC string here." Type="Variable" Display="always" Required="false" Mask="true"/>
+  <Config Name="WF_AUTH_PASSWORD_HASH" Target="WF_AUTH_PASSWORD_HASH" Default="" Mode="" Description="Required for password login unless using OIDC SSO or WF_AUTH_REQUIRED=false. Argon2id PHC hash of your login password. Generate with: printf '%s' 'your-password' | argon2 yoursalt16chars -id -e -- then paste the full argon2id PHC string here." Type="Variable" Display="always" Required="false" Mask="true"/>
   <Config Name="WF_CORS_ALLOW_ORIGINS" Target="WF_CORS_ALLOW_ORIGINS" Default="" Mode="" Description="REQUIRED when auth is enabled. Comma-separated list of origins allowed to call the API. Must EXACTLY match the URL in your browser address bar (scheme, host, and port). Example: http://192.168.1.10:8088 or https://wealthfolio.example.com" Type="Variable" Display="always" Required="true" Mask="false"/>
-  <Config Name="WF_AUTH_REQUIRED" Target="WF_AUTH_REQUIRED" Default="true" Mode="" Description="Set to false if a reverse proxy handles authentication (in which case leave WF_AUTH_PASSWORD_HASH empty)." Type="Variable" Display="advanced" Required="false" Mask="false">true</Config>
+  <Config Name="WF_AUTH_REQUIRED" Target="WF_AUTH_REQUIRED" Default="true" Mode="" Description="Set to false only if a reverse proxy handles authentication and you are not using Wealthfolio login or SSO. Reverse-proxy-only auth does not satisfy MCP: WF_MCP_ENABLED=true still requires WF_AUTH_PASSWORD_HASH or OIDC." Type="Variable" Display="advanced" Required="false" Mask="false">true</Config>
   <Config Name="WF_AUTH_TOKEN_TTL_MINUTES" Target="WF_AUTH_TOKEN_TTL_MINUTES" Default="60" Mode="" Description="Session access token lifetime in minutes." Type="Variable" Display="advanced" Required="false" Mask="false">60</Config>
+  <Config Name="WF_OIDC_ISSUER_URL" Target="WF_OIDC_ISSUER_URL" Default="" Mode="" Description="Optional SSO. OIDC issuer URL, for example https://auth.example.com/application/o/wealthfolio/. OIDC is enabled when this and WF_OIDC_CLIENT_ID are both set." Type="Variable" Display="advanced" Required="false" Mask="false"/>
+  <Config Name="WF_OIDC_CLIENT_ID" Target="WF_OIDC_CLIENT_ID" Default="" Mode="" Description="Optional SSO. Client ID registered with your OIDC provider. Required when WF_OIDC_ISSUER_URL is set." Type="Variable" Display="advanced" Required="false" Mask="false"/>
+  <Config Name="WF_OIDC_CLIENT_SECRET" Target="WF_OIDC_CLIENT_SECRET" Default="" Mode="" Description="Optional SSO. Client secret if your OIDC provider requires one. PKCE is always used, so many providers can leave this blank." Type="Variable" Display="advanced" Required="false" Mask="true"/>
+  <Config Name="WF_OIDC_REDIRECT_URL" Target="WF_OIDC_REDIRECT_URL" Default="" Mode="" Description="Required when OIDC is enabled. Must be registered in your identity provider. Example: https://wealthfolio.example.com/api/v1/auth/oidc/callback" Type="Variable" Display="advanced" Required="false" Mask="false"/>
+  <Config Name="WF_OIDC_SCOPES" Target="WF_OIDC_SCOPES" Default="" Mode="" Description="Optional SSO. Space-separated scopes. Leave blank for the default: openid email profile." Type="Variable" Display="advanced" Required="false" Mask="false"/>
+  <Config Name="WF_OIDC_ALLOWED_EMAILS" Target="WF_OIDC_ALLOWED_EMAILS" Default="" Mode="" Description="Optional SSO allowlist. Comma-separated verified email addresses allowed to sign in. OIDC requires this and/or WF_OIDC_ALLOWED_SUBS unless WF_OIDC_ALLOW_ANY=true." Type="Variable" Display="advanced" Required="false" Mask="false"/>
+  <Config Name="WF_OIDC_ALLOWED_SUBS" Target="WF_OIDC_ALLOWED_SUBS" Default="" Mode="" Description="Optional SSO allowlist. Comma-separated OIDC subject IDs allowed to sign in. Preferred over email allowlists when available." Type="Variable" Display="advanced" Required="false" Mask="false"/>
+  <Config Name="WF_OIDC_ALLOW_ANY" Target="WF_OIDC_ALLOW_ANY" Default="" Mode="" Description="Optional SSO. Set true only to allow any user authenticated by your identity provider. Only safe on a dedicated single-user identity provider." Type="Variable" Display="advanced" Required="false" Mask="false"/>
+  <Config Name="WF_OIDC_POST_LOGOUT_REDIRECT_URL" Target="WF_OIDC_POST_LOGOUT_REDIRECT_URL" Default="" Mode="" Description="Optional SSO logout. URL where the identity provider returns the browser after logout. Must be registered with the provider if set." Type="Variable" Display="advanced" Required="false" Mask="false"/>
+  <Config Name="WF_OIDC_RP_LOGOUT" Target="WF_OIDC_RP_LOGOUT" Default="true" Mode="" Description="Optional SSO logout. Set false to force local-only logout even when the identity provider supports RP-initiated logout. Default is true." Type="Variable" Display="advanced" Required="false" Mask="false">true</Config>
+  <Config Name="WF_MCP_ENABLED" Target="WF_MCP_ENABLED" Default="false" Mode="" Description="Enable AI Agent Access (MCP) at /mcp. Requires Wealthfolio auth via WF_AUTH_PASSWORD_HASH or OIDC. The container refuses to start with MCP enabled if WF_AUTH_REQUIRED=false and no app auth is configured." Type="Variable" Display="advanced" Required="false" Mask="false">false</Config>
+  <Config Name="WF_MCP_AUDIT_ENABLED" Target="WF_MCP_AUDIT_ENABLED" Default="true" Mode="" Description="When MCP is enabled, write agent tool calls to the audit log. Set false to disable new audit entries." Type="Variable" Display="advanced" Required="false" Mask="false">true</Config>
   <Config Name="WF_REQUEST_TIMEOUT_MS" Target="WF_REQUEST_TIMEOUT_MS" Default="300000" Mode="" Description="HTTP request timeout in milliseconds. Default is 5 minutes -- generous to accommodate large broker syncs." Type="Variable" Display="advanced" Required="false" Mask="false">300000</Config>
   <Config Name="WF_LISTEN_ADDR" Target="WF_LISTEN_ADDR" Default="0.0.0.0:8088" Mode="" Description="Bind address inside the container. Leave at 0.0.0.0:8088 unless you know what you are doing." Type="Variable" Display="advanced" Required="true" Mask="false">0.0.0.0:8088</Config>
   <Config Name="WF_DB_PATH" Target="WF_DB_PATH" Default="/data/wealthfolio.db" Mode="" Description="SQLite database path inside the container. Must live under /data so it persists." Type="Variable" Display="advanced" Required="true" Mask="false">/data/wealthfolio.db</Config>
